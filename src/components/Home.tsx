@@ -31,13 +31,7 @@ ChartJS.register(
 
 const Home = () => {
 	const mqttContext = useMQTTContext();
-	const {
-		// fetchDataFromTimestream,
-		machineStatusStream,
-		// setMachineStatusStream,
-		vendEventsStream,
-		// setVendEventsStream,
-	} = useTimestream();
+	const { machineStatusStream, vendEventsStream } = useTimestream();
 	const [machineStatusData, setMachineStatusData] = useState<ChartData>({
 		labels: [],
 		datasets: [],
@@ -49,9 +43,6 @@ const Home = () => {
 	});
 
 	useEffect(() => {
-		console.log('Updating Graph Data');
-		console.log(machineStatusStream);
-
 		setMachineStatusData({
 			labels: machineStatusStream.map(
 				(status) =>
@@ -66,10 +57,12 @@ const Home = () => {
 					label: 'DC',
 					data: machineStatusStream.map((status) => {
 						if (status.DC === 0) {
-							return machineStatusStream
-								.slice(0, machineStatusStream.indexOf(status))
-								.reverse()
-								.find((status) => status.DC !== 0)?.DC ?? 0;
+							return (
+								machineStatusStream
+									.slice(0, machineStatusStream.indexOf(status))
+									.reverse()
+									.find((status) => status.DC !== 0)?.DC ?? 0
+							);
 						}
 						return status.DC ?? 0;
 					}),
@@ -96,7 +89,6 @@ const Home = () => {
 					borderColor: 'rgb(53, 162, 235)',
 					backgroundColor: 'rgba(53, 162, 235, 0.5)',
 				},
-
 			],
 		});
 	}, [machineStatusStream, vendEventsStream]);
@@ -109,11 +101,11 @@ const Home = () => {
 
 			{mqttContext.isConnected && (
 				<div className="space-y-2 overflow-y-visible">
-					<div className="flex flex-col md:flex-row md:space-x-4 space-y-4 md:space-y-0 overflow-y-auto">
+					<div className="flex flex-col p-2 md:flex-row md:space-x-4 space-y-4 md:space-y-0 overflow-y-auto">
 						{mqttContext.topics.map((topic) => (
 							<div
 								key={topic}
-								className="bg-card rounded-lg max-h-[29vh] min-h-60  w-full overflow-y-auto"
+								className="bg-card shadow-md rounded-lg max-h-[29vh] min-h-60  w-full overflow-y-auto"
 							>
 								<div className="pt-4 pb-2 flex items-center gap-2 px-4 justify-between sticky top-0 bg-card flex-wrap">
 									<span className="text-sm font-semibold">{topic}</span>
@@ -179,11 +171,9 @@ const Home = () => {
 											{mqttContext.machineStatusBuffer.map((msg, index) => (
 												<div
 													key={index}
-													className="p-2 bg-slate-200 dark:bg-slate-800 rounded"
+													className="p-2 bg-slate-200 dark:bg-slate-800 shadow-inner rounded"
 												>
 													<pre className="whitespace-pre-wrap text-xs sm:text-sm">
-														<strong>Topic:</strong> {`machineStatus`}
-														<hr />
 														<strong>Message:</strong>{' '}
 														{JSON.stringify(msg.message, null, 2)}
 													</pre>
@@ -201,11 +191,9 @@ const Home = () => {
 												{mqttContext.sentMessagesBuffer.map((msg, index) => (
 													<div
 														key={index}
-														className="p-2 bg-slate-200 dark:bg-slate-800 rounded"
+														className="p-2 bg-slate-200 dark:bg-slate-800 rounded shadow-inner "
 													>
 														<pre className="whitespace-pre-wrap text-xs sm:text-sm">
-															<strong>Topic:</strong> {`machineStatus`}
-															<br />
 															<strong>Message:</strong>{' '}
 															{JSON.stringify(msg.message, null, 2)}
 														</pre>
@@ -223,11 +211,9 @@ const Home = () => {
 												{mqttContext.vendEventsBuffer.map((msg, index) => (
 													<div
 														key={index}
-														className="p-2 bg-slate-200 dark:bg-slate-800 rounded"
+														className="p-2 bg-slate-200 dark:bg-slate-800 rounded shadow-inner "
 													>
 														<pre className="whitespace-pre-wrap text-xs sm:text-sm">
-															<strong>Topic:</strong> {`machineStatus`}
-															<br />
 															<strong>Message:</strong>{' '}
 															{JSON.stringify(msg.message, null, 2)}
 														</pre>
@@ -248,9 +234,8 @@ const Home = () => {
 
 			{mqttContext.isConnected && (
 				<div className="w-full p-4 space-y-2 overflow-y-visible">
-					{/* Existing components */}
-					<div className="flex sm:flex-col md:flex-row md:space-x-4 space-y-4 md:space-y-0 overflow-y-auto">
-						<div className="w-full">
+					<div className="flex flex-col md:flex-row md:space-x-4 space-y-4 md:space-y-0 overflow-y-auto">
+						<div className="w-full md:h-64 lg:h-96">
 							<h2 className="text-lg font-semibold mb-2">
 								Machine Status Over Time
 							</h2>
@@ -269,6 +254,7 @@ const Home = () => {
 									>
 								}
 								options={{
+									responsive: true,
 									scales: {
 										x: {
 											title: {
@@ -281,24 +267,20 @@ const Home = () => {
 												display: true,
 												text: 'Temperature',
 											},
-											
 										},
-										
 									},
-									
+
 									//set point radius to 0
 									elements: {
 										point: {
 											radius: 0,
-											
 										},
-										
 									},
 									//add tooltips
 								}}
 							/>
 						</div>
-						{/* <div className="w-full">
+						<div className="w-full md:h-64 lg:h-96">
 							<h2 className="text-lg font-semibold mb-2">
 								Vend Events Over Time
 							</h2>
@@ -317,6 +299,7 @@ const Home = () => {
 									>
 								}
 								options={{
+									responsive: true,
 									scales: {
 										x: {
 											title: {
@@ -337,11 +320,10 @@ const Home = () => {
 											radius: 0,
 										},
 									},
-								
 								}}
 								// type="line"
 							/>
-						</div> */}
+						</div>
 					</div>
 				</div>
 			)}

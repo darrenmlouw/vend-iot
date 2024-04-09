@@ -94,7 +94,6 @@ export const TimestreamProvider = ({ children }: { children: ReactNode }) => {
 	);
 };
 
-// Hook to use the context
 export const useTimestream = () => {
 	const context = useContext(TimestreamContext);
 	if (context === undefined) {

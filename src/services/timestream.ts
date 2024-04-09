@@ -51,5 +51,3 @@ export const query = async (queryString: string) => {
   if (!tsq) throw new Error("TimestreamQueryClient is not initialized");
   return tsq.send(new QueryCommand({ QueryString: queryString }));
 };
-
-// Add other utility functions as needed.

@@ -22,7 +22,6 @@ export const TopBarProvider = ({ children }: TopBarProviderProps) => {
 	);
 };
 
-// Custom hook for consuming the context
 // eslint-disable-next-line react-refresh/only-export-components
 export const useTopBar = () => {
 	const context = useContext(TopBarContext);
